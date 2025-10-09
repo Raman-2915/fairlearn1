@@ -1,0 +1,27 @@
+name: linting
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      python:
+        required: true
+        type: string
+
+jobs:
+  linting-black:
+    # Need to keep black version consistent in
+    # requirements-dev.txt
+    # linting.yml
+    # .pre-commit-config.yaml
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: psf/black@24.4.2
+  ruff:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chartboost/ruff-action@v1
