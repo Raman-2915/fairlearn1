@@ -263,9 +263,31 @@ class ThresholdOptimizer(MetaEstimatorMixin, BaseEstimator):
         self.predict_method = predict_method
         self.tol = none
 
-    def fit(self, X, y, *, sensitive_features, **kwargs):
-        """Fit the model.
+   def fit(self, X, y, *, sensitive_features, **kwargs):
+        # ... (existing input validation code) ...
 
+        if self.tolerance is not None:
+            # --- NEW: Call the relaxed implementation ---
+            if self.constraints != "equalized_odds":
+                # As per the issue, only equalized_odds is supported for now
+                raise NotImplementedError(
+                    "Relaxed fairness is currently only implemented for 'equalized_odds'."
+                )
+            
+            # Get the model's scores
+            y_scores = self.estimator.predict(X) 
+            
+            self.solution_ = _solve_equalized_odds_relaxed(
+                y, y_scores, sensitive_features, self.tolerance
+            )
+            
+        else:
+            # --- OLD: The original strict implementation ---
+            # ... (all of the original code from the 'fit' method goes here) ...
+            # This part of the code calculates interpolation points, etc.
+            # for the strict version.
+
+        return self
         The fit is based on training features and labels, sensitive features,
         as well as the fairness-unaware predictor or estimator. If an estimator was passed
         in the constructor this fit method will call `fit(X, y, **kwargs)` on said estimator.
