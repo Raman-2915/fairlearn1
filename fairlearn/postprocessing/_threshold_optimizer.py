@@ -261,7 +261,7 @@ class ThresholdOptimizer(MetaEstimatorMixin, BaseEstimator):
         self.flip = flip
         self.prefit = prefit
         self.predict_method = predict_method
-        self.tol = tol
+        self.tol = none
 
     def fit(self, X, y, *, sensitive_features, **kwargs):
         """Fit the model.
